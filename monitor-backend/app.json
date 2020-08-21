@@ -1,0 +1,73 @@
+[{
+    "name": "eth-miner-1",
+    "cwd": ".",
+    "script": "app.js",
+    "log_date_format": "YYYY-MM-DD HH:mm Z",
+    "merge_logs": false,
+    "watch": false,
+    "exec_interpreter": "node",
+    "exec_mode": "fork_mode",
+    "env": {
+      "NODE_ENV": "production",
+      "RPC_HOST": "172.25.0.102",
+      "RPC_PORT": "8545",
+      "INSTANCE_NAME": "eth-miner-1",
+      "WS_SERVER": "http://172.25.0.110:3000",
+      "WS_SECRET": "test"
+    }
+  },
+  {
+    "name": "eth-miner-2",
+    "cwd": ".",
+    "script": "app.js",
+    "log_date_format": "YYYY-MM-DD HH:mm Z",
+    "merge_logs": false,
+    "watch": false,
+    "exec_interpreter": "node",
+    "exec_mode": "fork_mode",
+    "env": {
+      "NODE_ENV": "production",
+      "RPC_HOST": "172.25.0.103",
+      "RPC_PORT": "8545",
+      "INSTANCE_NAME": "eth-miner-2",
+      "WS_SERVER": "http://172.25.0.110:3000",
+      "WS_SECRET": "test"
+    }
+  },
+  {
+    "name": "eth-miner-3",
+    "cwd": ".",
+    "script": "app.js",
+    "log_date_format": "YYYY-MM-DD HH:mm Z",
+    "merge_logs": false,
+    "watch": false,
+    "exec_interpreter": "node",
+    "exec_mode": "fork_mode",
+    "env": {
+      "NODE_ENV": "production",
+      "RPC_HOST": "172.25.0.104",
+      "RPC_PORT": "8545",
+      "INSTANCE_NAME": "eth-miner-3",
+      "WS_SERVER": "http://172.25.0.110:3000",
+      "WS_SECRET": "test"
+    }
+  },
+  {
+    "name": "eth-node",
+    "cwd": ".",
+    "script": "app.js",
+    "log_date_format": "YYYY-MM-DD HH:mm Z",
+    "merge_logs": false,
+    "watch": false,
+    "exec_interpreter": "node",
+    "exec_mode": "fork_mode",
+    "env": {
+      "NODE_ENV": "production",
+      "RPC_HOST": "172.25.0.105",
+      "RPC_PORT": "8545",
+      "INSTANCE_NAME": "eth-node",
+      "WS_SERVER": "http://172.25.0.110:3000",
+      "WS_SECRET": "test"
+    }
+  }
+]

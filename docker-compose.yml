@@ -1,0 +1,140 @@
+version: "3"
+services:
+  eth-bootnode:
+    image: ethereum/client-go:alltools-v1.9.19
+    container_name: eth-bootnode
+    #Needs to be fix, so that the miners know the resulting enode id
+    # command: sh -c "geth --datadir /root/data init /root/genesis.json && geth --datadir /root/data -nodekey /root/boot.key --verbosity=4 --networkid 6660001 -nat extip:172.25.0.101"
+    command: bootnode -nodekey /root/boot.key -verbosity 4 -addr :30303 -nat extip:172.25.0.101
+    volumes:
+      - ./boot.key:/root/boot.key
+      - ./genesis/hyn-harmony.json:/root/genesis.json
+    networks:
+      chainnet:
+        ipv4_address: 172.25.0.101 # The miners need to know the IP address later on
+
+  eth-miner-1:
+    image: ethereum/client-go:alltools-v1.9.19
+    container_name: eth-miner-1
+    depends_on:
+      - eth-bootnode
+    environment:
+      - address=0xb00b9299c060fc8f339a3ebedae2a15194e89517 #derived from the private key which is passed in the args
+      - privatekey=317653b66eaa710bb762e4644bc8a0b0d801e0fafc38912e3346119efef39a97
+      - bootnodeId=3bac0370f4af0ffe8153010d2a4c21932ded6acb6d8e84390ae4bb6f50748caab3eaa0af10be2c447bbd2047c8f5898a9e15d155896be53cb078346ed5225c19 #derived from the nodekeyhex of the bootnode
+      - bootnodeIp=172.25.0.101
+      - bootnodePort=30303
+      - password=pass
+    command: sh /root/init-miner.sh -nat extip:172.25.0.102
+    volumes:
+      - ./init-miner.sh:/root/init-miner.sh
+      - ./genesis/hyn-harmony.json:/root/genesis.json
+    networks:
+      chainnet:
+        ipv4_address: 172.25.0.102 # The monitor needs to know this address
+
+  eth-miner-2:
+    image: ethereum/client-go:alltools-v1.9.19
+    container_name: eth-miner-2
+    depends_on:
+      - eth-miner-1
+    environment:
+      - address=0xb00b9299c060fc8f339a3ebedae2a15194e89517 #derived from the private key which is passed in the args
+      - privatekey=317653b66eaa710bb762e4644bc8a0b0d801e0fafc38912e3346119efef39a97
+      - bootnodeId=3bac0370f4af0ffe8153010d2a4c21932ded6acb6d8e84390ae4bb6f50748caab3eaa0af10be2c447bbd2047c8f5898a9e15d155896be53cb078346ed5225c19 #derived from the nodekeyhex of the bootnode
+      - bootnodeIp=172.25.0.101
+      - bootnodePort=30303
+      - password=pass
+    command: sh /root/init-miner.sh -nat extip:172.25.0.103
+    volumes:
+      - ./init-miner.sh:/root/init-miner.sh
+      - ./genesis/hyn-harmony.json:/root/genesis.json
+    networks:
+      chainnet:
+        ipv4_address: 172.25.0.103
+
+  eth-miner-3:
+    image: ethereum/client-go:alltools-v1.9.19
+    container_name: eth-miner-3
+    depends_on:
+      - eth-miner-2
+    environment:
+      - address=0x5d05b2972d91d9712ed5ebf493a796fb63767d10 #derived from the private key which is passed in the args
+      - privatekey=fc0f274b5fc8773564170e062be9943906621ef854f0641a2f3c5968d9a2e9a6
+      - bootnodeId=3bac0370f4af0ffe8153010d2a4c21932ded6acb6d8e84390ae4bb6f50748caab3eaa0af10be2c447bbd2047c8f5898a9e15d155896be53cb078346ed5225c19 #derived from the nodekeyhex of the bootnode
+      - bootnodeIp=172.25.0.101
+      - bootnodePort=30303
+      - password=pass
+    command: sh /root/init-miner.sh -nat extip:172.25.0.104
+    volumes:
+      - ./init-miner.sh:/root/init-miner.sh
+      - ./genesis/hyn-harmony.json:/root/genesis.json
+    networks:
+      chainnet:
+        ipv4_address: 172.25.0.104
+
+  eth-node:
+    image: ethereum/client-go:alltools-v1.9.19
+    container_name: eth-node
+    depends_on:
+      - eth-miner-2
+    environment:
+      - address=0x5d05b2972d91d9712ed5ebf493a796fb63767d10 #derived from the private key which is passed in the args
+      - privatekey=fc0f274b5fc8773564170e062be9943906621ef854f0641a2f3c5968d9a2e9a6
+      - bootnodeId=3bac0370f4af0ffe8153010d2a4c21932ded6acb6d8e84390ae4bb6f50748caab3eaa0af10be2c447bbd2047c8f5898a9e15d155896be53cb078346ed5225c19 #derived from the nodekeyhex of the bootnode
+      - bootnodeIp=172.25.0.101
+      - bootnodePort=30303
+      - password=pass
+    ports:
+      - 8545:8545
+    healthcheck:
+      test: wget http://localhost:8545
+      interval: 2s
+      timeout: 5s
+      retries: 30
+    command: sh /root/init-node.sh -nat extip:172.25.0.105
+    volumes:
+      - ./init-node.sh:/root/init-node.sh
+      - ./genesis/hyn-harmony.json:/root/genesis.json
+    networks:
+      chainnet:
+        ipv4_address: 172.25.0.105
+
+  geth-monitor-backend:
+    hostname: geth-monitor-backend
+    build:
+      context: ./monitor-backend
+    container_name: monitor-backend
+    networks:
+      chainnet:
+
+  geth-monitor-frontend:
+    hostname: geth-monitor-frontend
+    depends_on:
+      - geth-monitor-backend
+    build:
+      context: ./monitor-frontend
+    container_name: monitor-frontend
+    ports:
+      - 3000:3000
+    networks:
+      chainnet:
+        ipv4_address: 172.25.0.110
+
+  eth-explorer:
+    image: alethio/ethereum-lite-explorer
+    container_name: eth-explorer
+    ports:
+      - 8000:80
+    environment:
+      - APP_NODE_URL=http://localhost:8545
+    networks:
+      chainnet:
+        ipv4_address: 172.25.0.108
+
+networks:
+  chainnet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.25.0.0/24

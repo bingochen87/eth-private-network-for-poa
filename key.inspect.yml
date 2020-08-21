@@ -1,0 +1,15 @@
+#new account: geth account new --datadir ./data --password ./pass.txt
+#key info: ethkey inspect --private --passwordfile ./pass.txt ./data/keystore/UTC--2020-08-14T07-00-45.224043000Z--0b85c10a2382c858ba2b4acc693f00b1c30599d3
+keys:
+  - addr: 0xd554ee46a60a6bedc3586b0ee408da4e36aa83ba
+    publicKey: 04763627f7ac4d45a622749716aac9563f853328833c3e6cf6fd8e74465e25c410c708a7da71e28112e15a509a83e793feca4d599007b9b3543ca981ffbb22fedd
+    privateKey: 4ff0f60040ef844b3d3ebddaa41f781709c61691ec974e4c8da7045e792cb4a5
+
+  - addr: 0xb00b9299c060fc8f339a3ebedae2a15194e89517
+    publicKey: 0449f629dfcda27610d4ae74d093f8a01be51bd294c32fe1fcb3f14db2d13a3fc37669f2d0d6bb08c1fd857961c5732931e8eb5adc6ed6bd093a49c5e326275da3
+    privateKey: 317653b66eaa710bb762e4644bc8a0b0d801e0fafc38912e3346119efef39a97
+
+  - addr: 0x5d05b2972d91d9712ed5ebf493a796fb63767d10
+    publicKey: 04bc0b67fcc060bbbd9c23b9a8c1823f8b26add7542b5b99c64e4a2f59b17e73f57bbd59a1b0ceba87f89f0126c23217b8801c7576f9e1548901009ed60fdccb73
+    privateKey: fc0f274b5fc8773564170e062be9943906621ef854f0641a2f3c5968d9a2e9a6
+
